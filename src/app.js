@@ -33,20 +33,31 @@ App = {
     }
   },
 
-  loadAccount: async () => {
-    // Use the classic callback style to prevent the internal 'e is not a function' crash
-    web3.eth.getAccounts(function(error, accounts) {
-      if (error != null) {
-        console.error("An error occurred fetching accounts:", error);
-      } else if (accounts.length === 0) {
-        console.log("MetaMask is locked. Please unlock your extension wallet!");
-      } else {
-        // Safely extract the primary wallet address
-        App.account = accounts[0];
-        console.log("Connected account:", App.account);
-      }
+    loadAccount: async () => {
+    return new Promise((resolve, reject) => {
+      web3.eth.getAccounts(function(error, accounts) {
+        if (error != null) {
+          console.error("An error occurred fetching accounts:", error);
+          reject(error);
+        } else if (accounts.length === 0) {
+          console.log("MetaMask is locked. Please unlock your extension wallet!");
+          resolve();
+        } else {
+          App.account = accounts[0];
+          console.log("Connected account:", App.account);
+          resolve();
+        }
+      });
     });
   },
+
+  createTask: async () => {
+    App.setLoading(true)
+    const content = $('#newTask').val()
+    await App.todoList.createTask(content, { from: App.account })
+    window.location.reload()
+  },
+
 
   loadContract: async () => {
     // Fetch the JSON artifact created during truffle compile
@@ -110,13 +121,13 @@ App = {
       } else {
         $('#taskList').append($newTaskTemplate)
       }
+      //show the task
 
       $newTaskTemplate.show()
 
 
     }
 
-    //show the task
 
   },
 
