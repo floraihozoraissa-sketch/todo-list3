@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.5.0;
+pragma solidity ^0.8.38;
 
 contract TodoList {
     uint public taskCount = 0;
@@ -24,7 +24,7 @@ contract TodoList {
     );
 
     constructor() public{
-        createTask("Check out dappuniversity.com");
+        createTask("Learn Foundry toolkit");
     }
 
     function createTask(string memory _content) public{
